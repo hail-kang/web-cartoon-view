@@ -62,8 +62,9 @@
                                                 연재
                                             </div>
                                             <div class="col-md-9  col-xs-9">
-                                                <button class="btn btn-default btn-sm">미완</button>
-                                                <button class="btn btn-default btn-sm">완결</button>
+                                                <button class="btn btn-default btn-sm complete active" data-d="0">전체</button>
+                                                <button class="btn btn-default btn-sm complete" data-d="1">미완</button>
+                                                <button class="btn btn-default btn-sm complete" data-d="2">완결</button>
                                             </div>
                                         </div>
                                         <br>
@@ -72,28 +73,29 @@
                                                 플랫폼
                                             </div>
                                             <div class="col-md-9  col-xs-9">
-                                                <button class="btn btn-default btn-sm">만화</button>
-                                                <button class="btn btn-default btn-sm">웹툰</button>
+                                                <button class="btn btn-default btn-sm platform active" data-d="0">전체</button>
+                                                <button class="btn btn-default btn-sm platform" data-d="1">만화</button>
+                                                <button class="btn btn-default btn-sm platform" data-d="2">웹툰</button>
                                             </div>
                                         </div>
                                         <br>
                                         <div class="row">
                                             <div class="text-center col-md-3 col-xs-3">
-                                                플랫폼
+                                                장르
                                             </div>
                                             <div class="col-md-9  col-xs-9">
-                                                <button class="btn btn-default btn-sm">개그</button>
-                                                <button class="btn btn-default btn-sm">게임</button>
-                                                <button class="btn btn-default btn-sm">공포</button>
-                                                <button class="btn btn-default btn-sm">드라마</button>
-                                                <button class="btn btn-default btn-sm">라노벨</button>
-                                                <button class="btn btn-default btn-sm">스포츠</button>
-                                                <button class="btn btn-default btn-sm">순정</button>
-                                                <button class="btn btn-default btn-sm">러브코미디</button>
-                                                <button class="btn btn-default btn-sm">판타지</button>
-                                                <button class="btn btn-default btn-sm">일상</button>
-                                                <button class="btn btn-default btn-sm">TS</button>
-                                                <button class="btn btn-default btn-sm">추리</button>
+                                                <button class="btn btn-default btn-sm genre">개그</button>
+                                                <button class="btn btn-default btn-sm genre">게임</button>
+                                                <button class="btn btn-default btn-sm genre">공포</button>
+                                                <button class="btn btn-default btn-sm genre">드라마</button>
+                                                <button class="btn btn-default btn-sm genre">라노벨</button>
+                                                <button class="btn btn-default btn-sm genre">스포츠</button>
+                                                <button class="btn btn-default btn-sm genre">순정</button>
+                                                <button class="btn btn-default btn-sm genre">러브코미디</button>
+                                                <button class="btn btn-default btn-sm genre">판타지</button>
+                                                <button class="btn btn-default btn-sm genre">일상</button>
+                                                <button class="btn btn-default btn-sm genre">TS</button>
+                                                <button class="btn btn-default btn-sm genre">추리</button>
                                             </div>
                                         </div>
                                     </div>
@@ -101,7 +103,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" id="list">
                             <div class="col-md-3 col-xs-6">
                                 <div class="thumbnail">
                                     <img src="https://manatoki82.net/data/file/comic/153634/5930508/thumb-LP4N5r2I_nvO_240x280.jpg">
@@ -140,7 +142,41 @@
                         </div>
                     </div>
                     <script>
-                        
+                        $('.complete').click(function(){
+                            $('.complete').removeClass('active');
+                            $(this).addClass('active');
+                            search();
+                        });
+
+                        $('.platform').click(function(){
+                            $('.platform').removeClass('active');
+                            $(this).addClass('active');
+                        });
+
+                        $('.genre').click(function(){
+                            var d = $(this);
+                            if(d.hasClass('active')){
+                                d.removeClass('active');
+                            }
+                            else{
+                                $(this).addClass('active');
+                            }
+                        });
+
+                        function search(){
+                            var complete = $('.complete.active').data('d');
+                            var platform = $('.platform.active').data('d');
+                            var genre = [];
+                            var genre_selected = $('.genre.active');
+                            var length = genre_selected.length;
+                            for(var i = 0; i < length; i++){
+                                genre.push($(genre_selected[i]).text());
+                            }
+                            var query = {};
+
+                            $('#list').empty();
+                            
+                        }
                     </script>
                       
                 </div>
