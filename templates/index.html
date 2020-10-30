@@ -94,16 +94,22 @@
     </div>
 
     <div class="row" id="list">
+        {% for item in items %}
+        <div class="col-md-3 col-xs-6">
+            <div class="thumbnail">
+                <img src="/thumbnail/{{item.cartoonid}}">
+                <div class="caption">
+                    <p><a href="/cartoon/{{item.cartoonid}}" target="_blank">{{item.title}}</a></p>
+                    <input type="hidden" value="{{item.genre}}">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
 <script>
     var global_item = [
-        {cartoonid: 0, title : 'test01', thumbnail: 'https://manatoki82.net/data/file/comic/153634/5930508/thumb-LP4N5r2I_nvO_240x280.jpg', genre: ['개그', '게임']},
-        {cartoonid: 1, title : 'test02', thumbnail: 'https://manatoki82.net/data/file/comic/153634/5930508/thumb-LP4N5r2I_nvO_240x280.jpg', genre: ['게임', '공포']},
-        {cartoonid: 2, title : 'test03', thumbnail: 'https://manatoki82.net/data/file/comic/153634/5930508/thumb-LP4N5r2I_nvO_240x280.jpg', genre: ['개그', '드라마', '라노벨']},
-        {cartoonid: 3, title : 'test04', thumbnail: 'https://manatoki82.net/data/file/comic/153634/5930508/thumb-LP4N5r2I_nvO_240x280.jpg', genre: ['개그', '게임']},
-        {cartoonid: 4, title : 'test05', thumbnail: 'https://manatoki82.net/data/file/comic/153634/5930508/thumb-LP4N5r2I_nvO_240x280.jpg', genre: ['개그', '게임']},
-        {cartoonid: 5, title : 'test06', thumbnail: 'https://manatoki82.net/data/file/comic/153634/5930508/thumb-LP4N5r2I_nvO_240x280.jpg', genre: ['개그', '게임']},
+        {cartoonid: 0, title : 'test01', genre: ['개그', '게임']},
     ];
     $('.complete').click(function(){
         $('.complete').removeClass('active');
@@ -153,12 +159,11 @@
             type: 'post',
             data: query,
             success: function(data){
-                data = global_item;
                 $('#list').empty();
                 for(var item of data.items){
                     var html = `<div class="col-md-3 col-xs-6">
                                     <div class="thumbnail">
-                                        <img src="${item.thumbnail}">
+                                        <img src="/thumbnail/${item.cartoonid}">
                                         <div class="caption">
                                             <p><a href="/cartoon/${item.cartoonid}" target="_blank">${item.title}</a></p>
                                         </div>
