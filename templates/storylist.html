@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="/thumbnail/{{cartoon.cartoonid}}" class="img-responsive">
+                        </div>
+                        <div class="col-md-8" style="word-break: break-all;">
+                            <h2>{{cartoon.title}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="list-group">
+                {% for story in storylist %}
+                <li class="list-group-item"><a href="/cartoon/{{cartoon.cartoonid}}/story/{{story.number}}">{{story.number}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -31,7 +31,7 @@ create table cartoon_genre(
 
 create table story(
     storyid int not null auto_increment,
-    title varchar(100) not null,
+    number int not null,
     cartoonid int not null,
     primary key(storyid),
     foreign key(cartoonid) references cartoon(cartoonid)

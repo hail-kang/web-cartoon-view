@@ -51,7 +51,7 @@ def index():
         return 'error'
 
 @app.route('/<string:title>')
-def only_title(title):
+def index_title(title):
     db = None
     try:
         db = db_connect()
@@ -101,10 +101,17 @@ def search():
                 where += f' and c.complete={complete}'
             if platform != 0:
                 where += f' and c.platform={platform}'
-            if len(genre) != 0:
-                where += ' and ('
-                for g in genre:
-                    where += f'c.'
+
+            if len(genre) == 1:
+                where += f' and exists(select * \
+                                        from cartoon_genre cg \
+                                        join genre g on cg.genreid=g.genreid \
+                                        where g.name="{genre[0]}")'
+            elif len(genre) > 1:
+                where += f' and exists(select * \
+                                        from cartoon_genre cg \
+                                        join genre g on cg.genreid=g.genreid \
+                                        where g.name in {tuple(genre)})'
             
             sql = f'select c.cartoonid, c.title, c.complete, c.platform, a.name \
                     from cartoon c \
@@ -112,8 +119,6 @@ def search():
                     where 1=1' + where
             cursor.execute(sql)
             result = cursor.fetchall()
-
-            print(sql)
 
             sql = f'select cg.cartoonid, g.name \
                     from cartoon_genre cg \
@@ -142,6 +147,15 @@ def image_thumbnail(cartoonid):
     with open(path, 'rb') as f:
         result = f.read()
     return result
+
+@app.route('/cartoon/<int:cartoonid>')
+def view_story_list(cartoonid):
+
+    return render_template('storylist.html')
+
+@app.route('/cartoon/<int:cartoonid>/story/<int:number>')
+def view_story(cartoonid, number):
+    return render_template('story.html')
 
 if __name__ == "__main__":
     app.run('127.0.0.1', '8080')

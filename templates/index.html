@@ -159,6 +159,7 @@
             type: 'post',
             data: query,
             success: function(data){
+                console.log(data);
                 $('#list').empty();
                 for(var item of data.items){
                     var html = `<div class="col-md-3 col-xs-6">
