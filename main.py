@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request
 import json
+import os
 import pymysql
 
 # class CustomFlask(Flask):
@@ -45,7 +46,8 @@ def index():
         if db != None:
             db.close()
         return render_template('index.html', items=result)
-    except:
+    except Exception as e:
+        print(e)
         if db != None:
             db.close()
         return 'error'
@@ -75,7 +77,8 @@ def index_title(title):
         if db != None:
             db.close()
         return render_template('index.html', items=result, keyword=title)
-    except:
+    except Exception as e:
+        print(e)
         if db != None:
             db.close()
         return 'error'
@@ -136,7 +139,8 @@ def search():
         return jsonify({
             'items' : result
         })
-    except:
+    except Exception as e:
+        print(e)
         if db != None:
             db.close()
         return 'error'
@@ -150,12 +154,46 @@ def image_thumbnail(cartoonid):
 
 @app.route('/cartoon/<int:cartoonid>')
 def view_story_list(cartoonid):
+    db = None
+    try:
+        db = db_connect()
+        with db.cursor(pymysql.cursors.DictCursor) as cursor:
+            sql = 'select * from cartoon where cartoonid=%s'
+            cursor.execute(sql, cartoonid)
+            cartoon = cursor.fetchone()
 
-    return render_template('storylist.html')
+            sql = 'select * from story where cartoonid=%s order by number desc'
+            cursor.execute(sql, cartoonid)
+            storylist = cursor.fetchall()
+
+            sql = 'select g.name \
+                    from cartoon_genre cg \
+                    join genre g on cg.genreid=g.genreid \
+                    where cg.cartoonid=%s'
+            cursor.execute(sql, cartoonid)
+            genre = cursor.fetchall()
+        if db != None:
+            db.close()
+        return render_template('storylist.html', cartoon=cartoon, storylist=storylist, genre=genre)
+    except Exception as e:
+        print(e)
+        if db != None:
+            db.close()
+        return 'error'
 
 @app.route('/cartoon/<int:cartoonid>/story/<int:number>')
 def view_story(cartoonid, number):
-    return render_template('story.html')
+    inspect = f'C:/Users/강하일/Desktop/storage/cartoon/{cartoonid}/{number}'
+    files = next(os.walk(inspect))[2]
+    files.sort(key=lambda name : int(name[:name.find('.')]))
+    return render_template('story.html', cartoonid=cartoonid, number=number, images=files)
+
+@app.route('/cartoon/<int:cartoonid>/story/<int:number>/cut/<string:arrange>')
+def image_cut(cartoonid, number, arrange):
+    path = f'C:/Users/강하일/Desktop/storage/cartoon/{cartoonid}/{number}/{arrange}'
+    with open(path, 'rb') as f:
+        result = f.read()
+    return result
 
 if __name__ == "__main__":
     app.run('127.0.0.1', '8080')
