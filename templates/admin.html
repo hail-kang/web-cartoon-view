@@ -1,0 +1,20 @@
+{% extends 'admin_layout.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <a href="/admin/addcartoon" class="btn btn-default">+ Add</a>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <ul>
+                {% for item in cartoon %}
+                <li><a href="/admin/modifycartoon/{{item.cartoonid}}">{{ item.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

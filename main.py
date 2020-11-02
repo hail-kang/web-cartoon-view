@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, url_for, redirect
 import json
 import os
 import pymysql
@@ -194,6 +194,86 @@ def image_cut(cartoonid, number, arrange):
     with open(path, 'rb') as f:
         result = f.read()
     return result
+
+@app.route('/admin')
+def view_admin():
+    db = None
+    try:
+        db = db_connect()
+        with db.cursor(pymysql.cursors.DictCursor) as cursor:
+            sql = 'select * from cartoon'
+            cursor.execute(sql)
+            cartoon = cursor.fetchall()
+        if db != None:
+            db.close()
+        return render_template('admin.html', cartoon=cartoon)
+    except Exception as e:
+        print(e)
+        if db != None:
+            db.close()
+        return 'error'
+
+@app.route('/admin/addcartoon')
+def view_addcartoon():
+    db = None
+    try:
+        db = db_connect()
+        with db.cursor(pymysql.cursors.DictCursor) as cursor:
+            sql = 'select authorid, name from author'
+            cursor.execute(sql)
+            author = cursor.fetchall()
+        if db != None:
+            db.close()
+        return render_template('addcartoon.html', author=author)
+    except Exception as e:
+        print(e)
+        if db != None:
+            db.close()
+        return 'error'
+
+@app.route('/api/addcartoon', methods=['POST'])
+def api_addcartoon():
+    db = None
+    try:
+        db = db_connect()
+        with db.cursor(pymysql.cursors.DictCursor) as cursor:
+            isaddauthor = request.form.get('isaddauthor')
+            author = request.form.get('author')
+            authorid = request.form.get('authorid')
+            if isaddauthor:
+                sql = 'insert into author(name) values(%s)'    
+                cursor.execute(sql, author)
+
+                sql = 'select last_insert_id() authorid'
+                cursor.execute(sql)
+                authorid = cursor.fetchone().get('authorid')
+
+            title = request.form.get('title')
+            complete = request.form.get('complete')
+            plaform = request.form.get('platform')
+            sql = 'insert into cartoon(title, complete, platform, authorid) values(%s, %s, %s, %s)'
+            cursor.execute(sql, (title, complete, plaform, authorid))
+
+            sql = 'select last_insert_id() cartoonid'
+            cursor.execute(sql)
+            cartoonid = cursor.fetchone().get('cartoonid')
+            
+            db.commit()
+
+        if db != None:
+            db.close()
+
+        thumbnail = request.files.get('thumbnail')
+        if thumbnail != None:
+            thumbnail.save(f'C:/Users/강하일/Desktop/storage/thumbnail/{cartoonid}.jpg')
+        return render_template('addcartoon.html', author=author)
+    except Exception as e:
+        print(e)
+        if db != None:
+            db.close()
+        return 'error'
+
+    return redirect('/admin')
 
 if __name__ == "__main__":
     app.run('127.0.0.1', '8080')
