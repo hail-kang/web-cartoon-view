@@ -238,15 +238,16 @@ def api_addcartoon():
         db = db_connect()
         with db.cursor(pymysql.cursors.DictCursor) as cursor:
             isaddauthor = request.form.get('isaddauthor')
-            author = request.form.get('author')
-            authorid = request.form.get('authorid')
-            if isaddauthor:
+            if isaddauthor == '1':
+                author = request.form.get('author')
                 sql = 'insert into author(name) values(%s)'    
                 cursor.execute(sql, author)
 
                 sql = 'select last_insert_id() authorid'
                 cursor.execute(sql)
                 authorid = cursor.fetchone().get('authorid')
+            else:
+                authorid = request.form.get('authorid')
 
             title = request.form.get('title')
             complete = request.form.get('complete')
@@ -266,14 +267,13 @@ def api_addcartoon():
         thumbnail = request.files.get('thumbnail')
         if thumbnail != None:
             thumbnail.save(f'C:/Users/강하일/Desktop/storage/thumbnail/{cartoonid}.jpg')
-        return render_template('addcartoon.html', author=author)
+            
+        return redirect('/admin')
     except Exception as e:
         print(e)
         if db != None:
             db.close()
         return 'error'
-
-    return redirect('/admin')
 
 if __name__ == "__main__":
     app.run('127.0.0.1', '8080')

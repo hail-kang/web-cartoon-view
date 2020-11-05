@@ -20,7 +20,7 @@
                                 <button class="btn btn-default" type="button" onclick="addAuthor()" id="authorBtn">작가추가</button>
                             </span>
                         </div>
-                        <input type="hidden" name="isaddauthor" id="isAddAuthor" value="false">
+                        <input type="hidden" name="isaddauthor" id="isAddAuthor" value="0">
                         <input type="hidden" name="authorid" id="authorid">
                     </div>
                 </div>
@@ -66,7 +66,7 @@
     $( function() {
         var availableTags = [
             {% for item in author %}
-            {label: "{{item.name}}", value: '{{item.name}}', hidden: '{{item.authorid}}'}
+            {label: "{{item.name}}", value: '{{item.name}}', hidden: '{{item.authorid}}'},
             {% endfor %}
         ];
         $("#author").autocomplete({
@@ -82,12 +82,12 @@
         var isAddAuthor = $('#isAddAuthor').val();
         if(isAddAuthor == 'true'){
             $('#authorBtn').text('작가추가');
-            $('#isAddAuthor').val(false);
+            $('#isAddAuthor').val(0);
             $('#author').removeAttr('readonly');
         }
         else{
             $('#authorBtn').text('취소');
-            $('#isAddAuthor').val(true);
+            $('#isAddAuthor').val(1);
             $('#author').attr('readonly', 'readonly');
         }
     }
