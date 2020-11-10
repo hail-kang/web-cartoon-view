@@ -275,5 +275,9 @@ def api_addcartoon():
             db.close()
         return 'error'
 
+@app.route('/admin/modifycartoon/<int:cartoonid>')
+def view_modifycartoon(cartoonid):
+    return ''
+
 if __name__ == "__main__":
     app.run('127.0.0.1', '8080')
